@@ -28,13 +28,13 @@ pipeline {
             steps {
                 script {
                     // Clone the repository
-                    git branch: 'main', url: 'https://github.com/watercloset128/Selenium_CI_Demo.git'
+                    git branch: 'main', url: 'https://github.com/watercloset128/Selenium.git'
                     
                     // Install dependencies
                     sh 'pip install -r requirements.txt'
                     
                     // Run pytest with the Selenium Hub IP
-                    sh "pytest --html=reports/latest-automation-report-Edge.html --self-contained-html -n 2 --seleniumhub=${env.SELENIUM_HUB_IP}:4444 ."
+                    sh "pytest --html=reports/latest-automation-report-Edge.html --self-contained-html -n 4 --seleniumhub=${env.SELENIUM_HUB_IP}:4444 ."
                 }
             }
             post {

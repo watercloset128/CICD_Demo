@@ -10,29 +10,20 @@ pipeline {
     stages {
         stage('Start Selenium Grid') {
             steps {
-                script {
-                    // Pull Docker images
-                    // sh 'docker -H $DOCKER_HOST pull selenium/hub:latest'
-                    // sh 'docker -H $DOCKER_HOST pull selenium/node-chrome:latest'
-                    // sh 'docker -H $DOCKER_HOST pull selenium/node-edge:latest'
-                    
+                script {                  
                     // Start Docker Compose
                     sh 'docker -H $DOCKER_HOST compose -f compose.yaml up -d'
                     
                     // Get the IP address of the Selenium Hub container
                     def seleniumHubIp = sh(script: 'docker -H $DOCKER_HOST inspect -f "{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}" selenium-hub', returnStdout: true).trim()
                     env.SELENIUM_HUB_IP = seleniumHubIp
-                    
-                    // Print the IP address of the Selenium Hub container for debugging
-                    echo "Selenium Hub IP: ${env.SELENIUM_HUB_IP}"
-                    echo "Variable seleniumHubIp is: ${seleniumHubIp}"
                 }
             }
         }
 
         stage('Run Tests') {
             agent {
-                label 'docker-jnlp-agent'
+                label 'docker-jnlp-agent-selenium-hub'
             }
             steps {
                 script {
